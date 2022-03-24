@@ -14,7 +14,6 @@ public class BreedingManagementProject {
 	}
 	
 	public static void Delete_Insect(HashSet <String> n, String index){
-		for(int i = 0; i < n.size(); i++) {
 			if(n.contains(index)==true) {
 				n.remove(index);
 				if(n.contains(index)==true) {
@@ -22,7 +21,6 @@ public class BreedingManagementProject {
 				}
 			}
 		}
-	}
 	
 	public static void Edit_Insect(HashSet <String> n, String index, String index2) {
 		n.remove(index);
