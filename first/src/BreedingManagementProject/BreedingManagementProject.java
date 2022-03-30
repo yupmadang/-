@@ -1,42 +1,13 @@
 package BreedingManagementProject;
 
 import java.util.InputMismatchException;
-import java.util.HashSet;
 import java.util.Scanner;
 
 public class BreedingManagementProject {
 	
-	public static void add_Insect(HashSet <String> n, String name){
-		n.add(name);
-		if(n.contains(name) == false) {
-			System.out.println("개체의 추가에 실패하였습니다.");
-		}
-	}
-	
-	public static void Delete_Insect(HashSet <String> n, String index){
-			if(n.contains(index)==true) {
-				n.remove(index);
-				if(n.contains(index)==true) {
-					System.out.println("삭제에 실패하였습니다.");
-				}
-			}
-		}
-	
-	public static void Edit_Insect(HashSet <String> n, String index, String index2) {
-		n.remove(index);
-		n.add(index2);
-		if(n.contains(index2) == false) {
-			System.out.println("값의 변경에 실패하였습니다.");
-		}
-	}
-	
-	public static void View_Insect(HashSet <String> n) {
-			System.out.println(n.toString());
-	}
-	
 	public static void main(String[] args) {
-		HashSet <String> ins = new HashSet <String> ();
 		Scanner stdin = new Scanner(System.in);
+		BreedingMode mode = new BreedingMode();
 		int menu;
 		do {
 			try {
@@ -46,27 +17,52 @@ public class BreedingManagementProject {
 				switch(menu) {
 				
 				case 1:
-					System.out.println("1, Add Insect");
-					String insect = stdin.next();
-					add_Insect(ins, insect);
-					System.out.println();
+					do{
+						System.out.println("1, Add Insect");
+						System.out.print("개체 코드 : ");int category = stdin.nextInt();
+						System.out.print("이름을 입력 : "); String insect = stdin.next();
+						System.out.print("무게 입력 : "); double weight = stdin.nextDouble();
+						mode.Add_Insect(category, insect, weight);
+						System.out.println();
+						System.out.print("추가를 종료하시겠습니까? (0(종료)/1(반복)): "); int a = stdin.nextInt();
+						
+						if(a == 0) {
+							break;
+						}
+						else if(a == 1) {
+							continue;
+						}
+						
+						else {
+							System.out.println("유효하지 않은 입력입니다.");
+						}
+					}while(true);
 					break;
+					
 				case 2:
 					System.out.println("2, Delete Insect");
-					String insect2 = stdin.next();
-					Delete_Insect(ins, insect2);
+				    System.out.print("삭제할 유형을 선택 (0 : 전체삭제 / 1 : 선택삭제) : "); int num = stdin.nextInt();
+				    if(num == 1) {
+				    	System.out.print("삭제할 개체 번호 : "); int num2 = stdin.nextInt();
+				    	mode.Delete_Insect(num2);
+				    }
+				    else if(num == 0) {
+				    	mode.Info_Name.clear();
+				    }
 					System.out.println();
 					break;
+					
 				case 3:
 					System.out.println("3, Edit Insect");
-					String insect3 = stdin.next();
-					String insect4 = stdin.next();
-					Edit_Insect(ins,insect3,insect4);
+					System.out.print("변경할 개체 번호 : "); int num1 = stdin.nextInt();
+					System.out.print("무게 : "); double num2 = stdin.nextDouble();
+					mode.Edit_Insect(num1, num2);
 					System.out.println();
 					break;
+					
 				case 4:
 					System.out.println("4, View Insect");
-					View_Insect(ins);
+					mode.ShowAll_Insect();
 					System.out.println();
 					break;
 				}
@@ -89,4 +85,3 @@ public class BreedingManagementProject {
 		stdin.close();
 	}
 }
-
