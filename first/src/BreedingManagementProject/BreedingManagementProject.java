@@ -8,6 +8,7 @@ public class BreedingManagementProject {
 	public static void main(String[] args) {
 		Scanner stdin = new Scanner(System.in);
 		BreedingMode mode = new BreedingMode(); //BreedingMode 참조자료형인 mode이름의 인스턴스 생성
+		
 		int menu;
 		do {
 			try {
@@ -22,7 +23,8 @@ public class BreedingManagementProject {
 						System.out.print("개체 코드 : ");int category = stdin.nextInt();
 						System.out.print("이름을 입력 : "); String insect = stdin.next();
 						System.out.print("무게 입력 : "); double weight = stdin.nextDouble();
-						mode.Add_Insect(category, insect, weight);
+						System.out.print("톱밥종류 입력 : "); String stock = stdin.next();
+						mode.Add_Insect(category, insect, weight, stock);
 						System.out.println();
 						System.out.print("추가를 종료하시겠습니까? (0(종료)/1(반복)): "); int a = stdin.nextInt();
 						
@@ -56,7 +58,8 @@ public class BreedingManagementProject {
 					System.out.println("3, Edit Insect");
 					System.out.print("변경할 개체 번호 : "); int num1 = stdin.nextInt();//개체를 구분하기 위한 아이디 입력
 					System.out.print("무게 : "); double num2 = stdin.nextDouble();//그 개체의 변경할 무게 입력
-					mode.Edit_Insect(num1, num2);//Edit_Insect(num1, num2)메서드 호출
+					System.out.print("교체 횟수 : "); int num3 = stdin.nextInt();//개체 먹이 교체 횟수 변경
+					mode.Edit_Insect(num1, num2, num3);//Edit_Insect(num1, num2, num3)메서드 호출
 					System.out.println();
 					break;
 					
@@ -67,11 +70,11 @@ public class BreedingManagementProject {
 					break;
 				}
 			
-				if(menu > 5 || menu < 1) {//모드의 값이 범위를 벗어난 경우
+				if(menu > 6 || menu < 1) {//모드의 값이 범위를 벗어난 경우
 					System.out.println("지원하지 않는 모드입니다.");
 				}
 				
-				if(menu == 5) {//프로그램 종료
+				if(menu == 6) {//프로그램 종료
 					System.out.println("프로젝트를 종료합니다.");
 					System.out.println();
 					break;
