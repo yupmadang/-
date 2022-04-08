@@ -70,11 +70,11 @@ public class BreedingManagementProject {
 					break;
 				}
 			
-				if(menu > 6 || menu < 1) {//모드의 값이 범위를 벗어난 경우
+				if(menu > 5 || menu < 1) {//모드의 값이 범위를 벗어난 경우
 					System.out.println("지원하지 않는 모드입니다.");
 				}
 				
-				if(menu == 6) {//프로그램 종료
+				if(menu == 5) {//프로그램 종료
 					System.out.println("프로젝트를 종료합니다.");
 					System.out.println();
 					break;

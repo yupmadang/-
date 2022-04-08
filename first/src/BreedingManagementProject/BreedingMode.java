@@ -18,9 +18,16 @@ public class BreedingMode { //개체의 추가, 제거, 편집, 출력의 메서드를 담은 클래
 	}
 	public void Delete_Insect(int id) {//개체 제거 메서드
 		Iterator<Insect> ir = Info_Name.iterator();//Iterator메서드를 사용해서 순회
+		Iterator<Stock> ir2 = Info_Stock.iterator();//Iterator메서드를 사용해서 순회
 		while(ir.hasNext()) {//리스트의 다음 값이 있는 경우
 			if(ir.next().getId() == id) {
-				ir.remove();//ir이 가리키는 요소 제거
+				ir.remove();//ir이 가리키는 요소 제거s
+				System.out.println("제거할 개체를 제거하였습니다.");
+			}
+		}
+		while(ir2.hasNext()) {//리스트의 다음 값이 있는 경우
+			if(ir2.next().getId() == id) {
+				ir2.remove();//ir2이 가리키는 요소 제거
 				System.out.println("제거할 개체를 제거하였습니다.");
 			}
 		}
