@@ -49,5 +49,4 @@ public class Stock extends Insect {//추상클래스를 상속 받는 자식클래스
 	public String toString() {
 		return "[개체 번호 : "+ id + ", 개체명 : " + name +", "+"톱밥 종류 : "+name2+", 교체 횟수: "+num+"회]";
 	}
-
 }

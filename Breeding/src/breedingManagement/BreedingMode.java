@@ -128,6 +128,7 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //¿Œ
 				edit3.setLength(Info_DryInsect.get(i).getLength());
 				edit3.setQuality(quality);
 				edit3.setLabel(Info_DryInsect.get(i).getLabel());
+				Info_DryInsect.set(i, edit3);
 			}
 		}
 	}
