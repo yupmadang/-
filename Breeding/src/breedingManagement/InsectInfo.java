@@ -1,8 +1,8 @@
 package breedingManagement;
 
-public class InsectInfo extends Insect{
+public class InsectInfo extends Insect{//추상클래스를 상속 받은 자식클래스
 	
-	public InsectInfo(int id, String name, double weight) {
+	public InsectInfo(int id, String name, double weight) {//초기화를 위한 생성자 생성
 		this.id = id;
 		this.name = name;
 		this.weight = weight;
@@ -34,6 +34,7 @@ public class InsectInfo extends Insect{
 		this.weight = weight;
 	}
 	
+	@Override //추상클래스에 있던 메서드를 오버라이드
 	public String toString() {
 		return "[개체 번호 : "+ id + ", 개체명 : " + name +", "+"무게 : "+weight+"g, 투입날짜: "+time1+"]";
 	}

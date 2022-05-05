@@ -3,7 +3,7 @@ package breedingManagement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public abstract class Insect {
+public abstract class Insect { //부모클래스를 추상클래스로 변경
 
 	SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");		
 	Date time = new Date();

@@ -1,6 +1,6 @@
 package breedingManagement;
 
-public class DryInsect extends Insect{
+public class DryInsect extends Insect{//추상클래스를 상속 받는 자식클래스
 	
 	private double length;
 	private String quality;
@@ -56,6 +56,7 @@ public class DryInsect extends Insect{
 		this.label = label;
 	}
 	
+	@Override//추상클래스에 있던 메서드를 오버라이드
 	public String toString() {
 		return "[개체 번호 : "+ id + ", 개체명 : " + name +", "+"길이 : "+length+"mm, 상태: "+quality+", 라벨 : "+label+"]";
 	}
