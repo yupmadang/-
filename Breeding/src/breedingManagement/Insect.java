@@ -13,7 +13,7 @@ public abstract class Insect { //부모클래스를 추상클래스로 변경
 	protected String name;
 	protected double weight;
 
-	public String toString() {
+	public String toString() { //상속으로 구현할 메서드이므로 null반환
 		return null;
 	}
 }

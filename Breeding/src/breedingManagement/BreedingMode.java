@@ -16,6 +16,7 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 	Stock edit2 = new Stock();
 	DryInsect dins;
 	DryInsect edit3 = new DryInsect();
+	ExcutionClass ex = new ExcutionClass();
 	
 	//참조한  인터페이스의 메서드 BreedingInterface
 	
@@ -41,7 +42,7 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 				ir2.remove();
 			}
 		}
-		System.out.println("개체를 제거완료하였습니다.");
+		ex.RemoveIns();
 	}
 	
 	@Override
@@ -63,7 +64,6 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 				Info_Stock.set(i, edit2);
 			}
 		}
-		
 	}
 	
 	public void Search_Insect(int id) { //개체 검색 메서드 구현
@@ -114,7 +114,7 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 		while(ir1.hasNext()) {
 			if(ir1.next().getLabel().equals(label)) {
 				ir1.remove();
-				System.out.println("선택한 개체가 삭제되었습니다.");
+				ex.RemoveIns();
 			}
 		}
 	}

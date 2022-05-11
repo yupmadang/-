@@ -9,7 +9,7 @@ public class InsectInfo extends Insect{//추상클래스를 상속 받은 자식클래스
 	}
 	
 	public InsectInfo() {}
-	
+	//get, set메서드
 	public int getId() {
 		return id;
 	}
