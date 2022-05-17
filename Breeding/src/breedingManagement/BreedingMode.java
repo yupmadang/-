@@ -1,9 +1,26 @@
 package breedingManagement;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Scanner;
 
-public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인터페이스를 다중상속 받은 BreedingMode클래스
+public class BreedingMode implements DryInsectInterface, BreedingInterface, Serializable{ 
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3499476101535632006L;
+	transient Scanner input;
+	public BreedingMode(Scanner input) {
+		this.input = input;
+	}
+	
+//인터페이스를 다중상속 받은 BreedingMode클래스
 	//객체를 저장할 링크드리스트 3개 선언
 	LinkedList<InsectInfo> Info_Name = new LinkedList<>();
 	LinkedList<Stock> Info_Stock = new LinkedList<>();
@@ -17,6 +34,27 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 	DryInsect dins;
 	DryInsect edit3 = new DryInsect();
 	ExcutionClass ex = new ExcutionClass();
+	Manual manual = new Manual();
+	
+	//설명서를 출력하기 위한 메서드
+	public void Show_Manual() {
+		try {
+			BufferedReader buffer = new BufferedReader(new FileReader("Manual.txt"));
+			while(true) {
+				String str = buffer.readLine();
+				if(str == null) {
+					break;
+				}
+				
+				System.out.println(str);
+			}
+			buffer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	//참조한  인터페이스의 메서드 BreedingInterface
 	
@@ -30,19 +68,16 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 	
 	@Override
 	public void	Delete_Insect(int id) {//개체 삭제 메서드 구현
-		Iterator<InsectInfo> ir1 = Info_Name.iterator();
-		Iterator<Stock> ir2 = Info_Stock.iterator();
-		while(ir1.hasNext()) {
-			if(ir1.next().getId() == id) {
-				ir1.remove();
+		for(int i = 0; i < Info_Name.size(); i++) {
+			if(Info_Name.get(i).getId() == id) {
+				Info_Name.remove(i);
 			}
 		}
-		while(ir2.hasNext()) {
-			if(ir2.next().getId() == id) {
-				ir2.remove();
+		for(int i = 0; i < Info_Stock.size(); i++) {
+			if(Info_Stock.get(i).getId() == id) {
+				Info_Stock.remove(i);
 			}
 		}
-		ex.RemoveIns();
 	}
 	
 	@Override
@@ -67,17 +102,15 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 	}
 	
 	public void Search_Insect(int id) { //개체 검색 메서드 구현
-		System.out.println("보유한 개체 현황입니다.");
+		ex.HaveIns();
 		for(int i = 0; i < Info_Name.size(); i++) {
 			if(Info_Name.get(i).getId() == id) {
 				System.out.println(Info_Name.get(i));
 			}
 		}
-		
-		System.out.println("개체의 먹이 교체현황입니다.");
+		ex.MealIns();
 		for(int i = 0; i < Info_Stock.size(); i++) {
 			if(Info_Stock.get(i).getId() == id) {
-				System.out.println("보유한 개체 현황입니다.");
 				System.out.println(Info_Stock.get(i));
 			}
 		}
@@ -87,16 +120,14 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 	public void Show_Insect() { //개체 출력 메서드 구현
 		Iterator<InsectInfo> ir1 = Info_Name.iterator();
 		Iterator<Stock> ir2 = Info_Stock.iterator();
-		
-		System.out.println("보유 개체 현황입니다.");
+		ex.HaveIns();
 		while(ir1.hasNext()) {
-			System.out.println(ir1.next());	
+			System.out.println(ir1.next());
 		}
-		
-		System.out.println("개체의 먹이 교체현황입니다.");
-		
+		System.out.println();
+		ex.MealIns();
 		while(ir2.hasNext()) {
-			System.out.println(ir2.next());	
+			System.out.println(ir2.next());
 		}
 	}
 	
@@ -109,12 +140,10 @@ public class BreedingMode implements DryInsectInterface, BreedingInterface{ //인
 	}
 	
 	@Override
-	public void Delete_Insect(String label) {//표본 제거 메서드 구현
-		Iterator<DryInsect> ir1 = Info_DryInsect.iterator();
-		while(ir1.hasNext()) {
-			if(ir1.next().getLabel().equals(label)) {
-				ir1.remove();
-				ex.RemoveIns();
+	public void Delete_Insect(int id, String name, double length) {//표본 제거 메서드 구현
+		for(int i = 0; i < Info_DryInsect.size(); i++) {
+			if(Info_DryInsect.get(i).getId() == id && Info_DryInsect.get(i).getLength() == length && Info_DryInsect.get(i).getName().equals(name)) {
+				Info_DryInsect.remove(i);
 			}
 		}
 	}

@@ -2,6 +2,11 @@ package breedingManagement;
 
 public class InsectInfo extends Insect{//추상클래스를 상속 받은 자식클래스
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9090613252482453288L;
+
 	public InsectInfo(int id, String name, double weight) {//초기화를 위한 생성자 생성
 		this.id = id;
 		this.name = name;

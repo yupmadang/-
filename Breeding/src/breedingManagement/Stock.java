@@ -1,6 +1,10 @@
 package breedingManagement;
 
-public class Stock extends Insect {//추상클래스를 상속 받는 자식클래스
+public class Stock extends Insect {/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5345826541081457085L;
+//추상클래스를 상속 받는 자식클래스
 
 	private String name2;
 	private int num = 1;

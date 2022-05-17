@@ -1,10 +1,15 @@
 package breedingManagement;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public abstract class Insect { //부모클래스를 추상클래스로 변경
+public abstract class Insect implements Serializable{ //부모클래스를 추상클래스로 변경
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1601939913873827408L;
 	SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");		
 	Date time = new Date();
 	
