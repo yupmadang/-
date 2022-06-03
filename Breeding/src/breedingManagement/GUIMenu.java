@@ -8,12 +8,14 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import javax.swing.JSplitPane;
 import java.awt.event.ActionListener;
+import java.lang.System.Logger;
+import java.util.LinkedList;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
@@ -26,28 +28,42 @@ import javax.swing.JScrollPane;
 public class GUIMenu {
 
 	private JFrame frame;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_7;
-	private JTextField textField_8;
 	private JTable table;
+	private JTextField TFName;
+	private JTextField TFId;
+	private JTextField TFWeight;
+	private JTextField TFMeal;
+	private JTextField TFCNum;
+	private JTextField EditTFWeight;
+	private JTextField DeleteIdTF;
+	private JTextField TFICNum;
+	private JTextField TFDate;
+	private JTextField TFICENum;
+	BreedingMode breedingMode = new BreedingMode();
+	LogClass logger = new LogClass("log.txt");
 
-	public GUIMenu() {
+	LinkedList<aliveInsect> name = logger.getINList();
+
+	public GUIMenu(String num) {
 		initialize();
 	}
 	
 	private void initialize() {
+		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(0, 0, 0, 0);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 400);
-		frame.setResizable(false);
+		frame.setSize(1200, 600);
+		frame.setTitle("YID-Project(My Insect Diary)");
+		frame.setResizable(true);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+
+		table = new JTable();
+		table.setEnabled(false);
+		Object []column = {"개체번호","개체이름","개체무게","먹이종류","교체횟수","투입일"};
+		Object[][] object = new Object[][] {};
+		DefaultTableModel model = new DefaultTableModel(object, column);
+		table.setModel(model);
 		
 		JLabel lblBreedingproject = new JLabel("BreedingProject");
 		lblBreedingproject.setBackground(SystemColor.desktop);
@@ -62,245 +78,357 @@ public class GUIMenu {
 		JSplitPane splitPane_1 = new JSplitPane();
 		frame.getContentPane().add(splitPane_1, BorderLayout.WEST);
 		
-		JLabel lblNewLabel = new JLabel("\uBAA8\uB4DC\uC120\uD0DD");
-		lblNewLabel.setFont(new Font("굴림", Font.BOLD, 12));
-		splitPane_1.setLeftComponent(lblNewLabel);
+		JLabel SMode = new JLabel("모드선택");
+		SMode.setFont(new Font("굴림", Font.BOLD, 12));
+		splitPane_1.setLeftComponent(SMode);
 		
 		JPanel panel = new JPanel();
 		splitPane_1.setRightComponent(panel);
 		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JButton btnNewButton = new JButton("\uAC1C\uCCB4\uCD94\uAC00");
-		panel.add(btnNewButton);
-		
-		JButton btnNewButton_1 = new JButton("\uAC1C\uCCB4\uC81C\uAC70");
-		btnNewButton_1.addActionListener(new ActionListener() {
+		JButton Add = new JButton("개체추가");			
+		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Vector<String> vec = new Vector<>();
+				LinkedList<aliveInsect> list = logger.getINList();
+				String id = TFId.getText();
+				for(aliveInsect i : logger.getINList()) {
+					if((""+i.getId()).equals(id)) {
+						return;
+					}
+				}
+				if(TFId.getText().isEmpty()) {
+					return;
+				}
+				String name = TFName.getText();
+				String weight = TFWeight.getText();
+				String name2 = TFMeal.getText();
+				String num = TFICNum.getText();
+				String date = TFDate.getText();
+				
+				logger.getINList().add(new aliveInsect(Integer.parseInt(id), name, Double.parseDouble(weight), name2, Integer.parseInt(num),date));
+				
+				vec.add(id);
+				vec.add(name);
+				vec.add(weight);
+				vec.add(name2);
+				vec.add(num);
+				vec.add(date);
+				
+				TFId.setText("");
+				TFName.setText("");
+				TFWeight.setText("");
+				TFMeal.setText("");
+				TFICNum.setText("");
+				TFDate.setText("");
+				
+				model.addRow(vec);
+				table.updateUI();
 			}
 		});
-		panel.add(btnNewButton_1);
+		panel.add(Add);
 		
-		JButton button = new JButton("\uAC1C\uCCB4\uD3B8\uC9D1");
-		panel.add(button);
+		JButton Delete = new JButton("개체제거");
+		Delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					String id = DeleteIdTF.getText();
+					for(aliveInsect i : logger.getINList()) {
+						if((""+i.getId()).equals(id)) {
+							logger.getINList().remove(i);
+							table.updateUI();
+							return;
+						}
+					}
+					table.updateUI();
+				}catch (Exception e1) {
+					return;
+				}
+			}
+		});
+		panel.add(Delete);
 		
-		JButton btnNewButton_2 = new JButton("\uAC1C\uCCB4 \uAC80\uC0C9");
-		panel.add(btnNewButton_2);
+		JButton Edit = new JButton("개체편집");
+		Edit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String id = TFCNum.getText(); 
+				String weight = EditTFWeight.getText();
+				String num = TFICENum.getText();
+				for(int i = 0; i < logger.getINList().size(); i++) {
+					if(logger.getINList().get(i).getId() == Integer.parseInt(id)) {
+						breedingMode.Edit_Insect(Integer.parseInt(id), Double.parseDouble(weight), Integer.parseInt(num));
+						table.updateUI();
+					}
+				}
+			}
+		});
+		panel.add(Edit);
 		
-		JButton btnNewButton_3 = new JButton("\uBAA9\uB85D\uCD9C\uB825");
-		panel.add(btnNewButton_3);
+		JButton DryMode = new JButton("표본모드");
+		DryMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unused")
+				DryGui dryGui = new DryGui();
+			}
+		});
+		panel.add(DryMode);
 		
-		JButton btnNewButton_5 = new JButton("\uD45C\uBCF8\uBAA8\uB4DC");
-		panel.add(btnNewButton_5);
+		JButton Manual = new JButton("설명서");
+		Manual.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unused")
+				ManualGui manual = new ManualGui();
+			}
+		});
 		
-		JButton btnNewButton_4 = new JButton("\uC124\uBA85\uC11C");
-		panel.add(btnNewButton_4);
+		JButton View = new JButton("목록출력");
+		View.addActionListener(new ActionListener() {
+			@SuppressWarnings("unchecked")
+			public void actionPerformed(ActionEvent e) {
+				LinkedList<aliveInsect> name1 = logger.getINList();
+				try{
+					if(name1.isEmpty()) {
+						return;
+					}
+				}catch (NumberFormatException e1) {
+					return;
+				}
+				for(int i = 0; i < name1.size(); i++) {
+					@SuppressWarnings("rawtypes")
+					Vector vec = new Vector();
+					vec.add(Integer.toString(name1.get(i).getId()));
+					vec.add(name1.get(i).getName());
+					vec.add(Double.toString(name1.get(i).getWeight()));
+					vec.add(name1.get(i).getName2());
+					vec.add(Integer.toString(name1.get(i).getNum()));
+					vec.add(name1.get(i).getDate());
+					model.addRow(vec);
+				}
+
+				table.updateUI();
+			}
+		});
+		panel.add(View);
+		panel.add(Manual);
+		
+		JButton End = new JButton("종료");
+		End.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				logger.PutObject();
+				System.exit(0);
+			}
+		});
+		panel.add(End);
 		
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		splitPane.setRightComponent(scrollPane);
+		scrollPane.setViewportView(table);
+		
 		JPanel panel_1 = new JPanel();
 		splitPane.setLeftComponent(panel_1);
 		GridBagLayout gbl_panel_1 = new GridBagLayout();
-		gbl_panel_1.columnWidths = new int[]{0, 96, 0};
-		gbl_panel_1.rowHeights = new int[]{21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel_1.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel_1.columnWidths = new int[]{0, 50, 0};
+		gbl_panel_1.rowHeights = new int[]{0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panel_1.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
+		gbl_panel_1.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
 		
-		JLabel lblNewLabel_1 = new JLabel("\uAC1C\uCCB4\uBC88\uD638");
-		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_1.gridx = 0;
-		gbc_lblNewLabel_1.gridy = 0;
-		panel_1.add(lblNewLabel_1, gbc_lblNewLabel_1);
+		JLabel AddL = new JLabel("개체추가");
+		GridBagConstraints gbc_AddL = new GridBagConstraints();
+		gbc_AddL.insets = new Insets(0, 0, 5, 0);
+		gbc_AddL.gridx = 1;
+		gbc_AddL.gridy = 0;
+		panel_1.add(AddL, gbc_AddL);
 		
-		textField = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.insets = new Insets(0, 0, 5, 0);
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 0;
-		panel_1.add(textField, gbc_textField);
-		textField.setColumns(10);
+		JLabel Id = new JLabel("개체번호");
+		GridBagConstraints gbc_Id = new GridBagConstraints();
+		gbc_Id.insets = new Insets(0, 0, 5, 5);
+		gbc_Id.anchor = GridBagConstraints.EAST;
+		gbc_Id.gridx = 0;
+		gbc_Id.gridy = 1;
+		panel_1.add(Id, gbc_Id);
 		
-		JLabel lblNewLabel_2 = new JLabel("\uC774\uB984");
-		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-		gbc_lblNewLabel_2.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_2.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_2.gridx = 0;
-		gbc_lblNewLabel_2.gridy = 1;
-		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
+		TFId = new JTextField();
+		GridBagConstraints gbc_TFId = new GridBagConstraints();
+		gbc_TFId.insets = new Insets(0, 0, 5, 0);
+		gbc_TFId.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFId.gridx = 1;
+		gbc_TFId.gridy = 1;
+		panel_1.add(TFId, gbc_TFId);
+		TFId.setColumns(10);
 		
-		textField_1 = new JTextField();
-		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_1.gridx = 1;
-		gbc_textField_1.gridy = 1;
-		panel_1.add(textField_1, gbc_textField_1);
-		textField_1.setColumns(10);
+		JLabel Name = new JLabel("이름");
+		GridBagConstraints gbc_Name = new GridBagConstraints();
+		gbc_Name.insets = new Insets(0, 0, 5, 5);
+		gbc_Name.anchor = GridBagConstraints.EAST;
+		gbc_Name.gridx = 0;
+		gbc_Name.gridy = 2;
+		panel_1.add(Name, gbc_Name);
 		
-		JLabel lblNewLabel_3 = new JLabel("\uBB34\uAC8C");
-		GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-		gbc_lblNewLabel_3.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_3.gridx = 0;
-		gbc_lblNewLabel_3.gridy = 2;
-		panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
+		TFName = new JTextField();
+		GridBagConstraints gbc_TFName = new GridBagConstraints();
+		gbc_TFName.insets = new Insets(0, 0, 5, 0);
+		gbc_TFName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFName.gridx = 1;
+		gbc_TFName.gridy = 2;
+		panel_1.add(TFName, gbc_TFName);
+		TFName.setColumns(10);
 		
-		textField_2 = new JTextField();
-		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_2.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_2.gridx = 1;
-		gbc_textField_2.gridy = 2;
-		panel_1.add(textField_2, gbc_textField_2);
-		textField_2.setColumns(10);
+		JLabel Weight = new JLabel("무게");
+		GridBagConstraints gbc_Weight = new GridBagConstraints();
+		gbc_Weight.insets = new Insets(0, 0, 5, 5);
+		gbc_Weight.anchor = GridBagConstraints.EAST;
+		gbc_Weight.gridx = 0;
+		gbc_Weight.gridy = 3;
+		panel_1.add(Weight, gbc_Weight);
 		
-		JLabel lblNewLabel_4 = new JLabel("\uBA39\uC774\uC885\uB958");
-		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-		gbc_lblNewLabel_4.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_4.gridx = 0;
-		gbc_lblNewLabel_4.gridy = 3;
-		panel_1.add(lblNewLabel_4, gbc_lblNewLabel_4);
+		TFWeight = new JTextField();
+		GridBagConstraints gbc_TFWeight = new GridBagConstraints();
+		gbc_TFWeight.insets = new Insets(0, 0, 5, 0);
+		gbc_TFWeight.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFWeight.gridx = 1;
+		gbc_TFWeight.gridy = 3;
+		panel_1.add(TFWeight, gbc_TFWeight);
+		TFWeight.setColumns(10);
 		
-		textField_3 = new JTextField();
-		GridBagConstraints gbc_textField_3 = new GridBagConstraints();
-		gbc_textField_3.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_3.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_3.gridx = 1;
-		gbc_textField_3.gridy = 3;
-		panel_1.add(textField_3, gbc_textField_3);
-		textField_3.setColumns(10);
+		JLabel Meal = new JLabel("먹이종류");
+		GridBagConstraints gbc_Meal = new GridBagConstraints();
+		gbc_Meal.insets = new Insets(0, 0, 5, 5);
+		gbc_Meal.anchor = GridBagConstraints.EAST;
+		gbc_Meal.gridx = 0;
+		gbc_Meal.gridy = 4;
+		panel_1.add(Meal, gbc_Meal);
 		
-		JLabel lblNewLabel_9 = new JLabel("\uAC1C\uCCB4\uCD94\uAC00");
-		GridBagConstraints gbc_lblNewLabel_9 = new GridBagConstraints();
-		gbc_lblNewLabel_9.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_9.gridx = 1;
-		gbc_lblNewLabel_9.gridy = 4;
-		panel_1.add(lblNewLabel_9, gbc_lblNewLabel_9);
+		TFMeal = new JTextField();
+		GridBagConstraints gbc_TFMeal = new GridBagConstraints();
+		gbc_TFMeal.insets = new Insets(0, 0, 5, 0);
+		gbc_TFMeal.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFMeal.gridx = 1;
+		gbc_TFMeal.gridy = 4;
+		panel_1.add(TFMeal, gbc_TFMeal);
+		TFMeal.setColumns(10);
 		
-		JLabel lblNewLabel_5 = new JLabel("\uBB34\uAC8C");
-		GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-		gbc_lblNewLabel_5.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_5.gridx = 0;
-		gbc_lblNewLabel_5.gridy = 5;
-		panel_1.add(lblNewLabel_5, gbc_lblNewLabel_5);
+		JLabel ICNum = new JLabel("교체횟수");
+		GridBagConstraints gbc_ICNum = new GridBagConstraints();
+		gbc_ICNum.anchor = GridBagConstraints.EAST;
+		gbc_ICNum.insets = new Insets(0, 0, 5, 5);
+		gbc_ICNum.gridx = 0;
+		gbc_ICNum.gridy = 5;
+		panel_1.add(ICNum, gbc_ICNum);
 		
-		textField_4 = new JTextField();
-		GridBagConstraints gbc_textField_4 = new GridBagConstraints();
-		gbc_textField_4.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_4.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_4.gridx = 1;
-		gbc_textField_4.gridy = 5;
-		panel_1.add(textField_4, gbc_textField_4);
-		textField_4.setColumns(10);
+		TFICNum = new JTextField();
+		GridBagConstraints gbc_TFICNum = new GridBagConstraints();
+		gbc_TFICNum.insets = new Insets(0, 0, 5, 0);
+		gbc_TFICNum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFICNum.gridx = 1;
+		gbc_TFICNum.gridy = 5;
+		panel_1.add(TFICNum, gbc_TFICNum);
+		TFICNum.setColumns(10);
 		
-		JLabel lblNewLabel_6 = new JLabel("\uAD50\uCCB4\uD69F\uC218");
-		GridBagConstraints gbc_lblNewLabel_6 = new GridBagConstraints();
-		gbc_lblNewLabel_6.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_6.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_6.gridx = 0;
-		gbc_lblNewLabel_6.gridy = 6;
-		panel_1.add(lblNewLabel_6, gbc_lblNewLabel_6);
+		JLabel date = new JLabel("투입일");
+		GridBagConstraints gbc_date = new GridBagConstraints();
+		gbc_date.anchor = GridBagConstraints.EAST;
+		gbc_date.insets = new Insets(0, 0, 5, 5);
+		gbc_date.gridx = 0;
+		gbc_date.gridy = 6;
+		panel_1.add(date, gbc_date);
 		
-		textField_5 = new JTextField();
-		GridBagConstraints gbc_textField_5 = new GridBagConstraints();
-		gbc_textField_5.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_5.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_5.gridx = 1;
-		gbc_textField_5.gridy = 6;
-		panel_1.add(textField_5, gbc_textField_5);
-		textField_5.setColumns(10);
+		TFDate = new JTextField();
+		GridBagConstraints gbc_TFDate = new GridBagConstraints();
+		gbc_TFDate.insets = new Insets(0, 0, 5, 0);
+		gbc_TFDate.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFDate.gridx = 1;
+		gbc_TFDate.gridy = 6;
+		panel_1.add(TFDate, gbc_TFDate);
+		TFDate.setColumns(10);
 		
-		JLabel lblNewLabel_8 = new JLabel("\uAC1C\uCCB4\uC218\uC815");
-		GridBagConstraints gbc_lblNewLabel_8 = new GridBagConstraints();
-		gbc_lblNewLabel_8.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_8.gridx = 1;
-		gbc_lblNewLabel_8.gridy = 7;
-		panel_1.add(lblNewLabel_8, gbc_lblNewLabel_8);
+		JLabel EditL = new JLabel("개체편집");
+		GridBagConstraints gbc_EditL = new GridBagConstraints();
+		gbc_EditL.insets = new Insets(0, 0, 5, 0);
+		gbc_EditL.gridx = 1;
+		gbc_EditL.gridy = 7;
+		panel_1.add(EditL, gbc_EditL);
 		
-		JLabel lblNewLabel_7 = new JLabel("\uBC88\uD638");
-		GridBagConstraints gbc_lblNewLabel_7 = new GridBagConstraints();
-		gbc_lblNewLabel_7.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_7.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_7.gridx = 0;
-		gbc_lblNewLabel_7.gridy = 8;
-		panel_1.add(lblNewLabel_7, gbc_lblNewLabel_7);
+		JLabel CNum = new JLabel("교체번호");
+		GridBagConstraints gbc_CNum = new GridBagConstraints();
+		gbc_CNum.anchor = GridBagConstraints.EAST;
+		gbc_CNum.insets = new Insets(0, 0, 5, 5);
+		gbc_CNum.gridx = 0;
+		gbc_CNum.gridy = 8;
+		panel_1.add(CNum, gbc_CNum);
 		
-		textField_6 = new JTextField();
-		GridBagConstraints gbc_textField_6 = new GridBagConstraints();
-		gbc_textField_6.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_6.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_6.gridx = 1;
-		gbc_textField_6.gridy = 8;
-		panel_1.add(textField_6, gbc_textField_6);
-		textField_6.setColumns(10);
+		TFCNum = new JTextField();
+		GridBagConstraints gbc_TFCNum = new GridBagConstraints();
+		gbc_TFCNum.insets = new Insets(0, 0, 5, 0);
+		gbc_TFCNum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFCNum.gridx = 1;
+		gbc_TFCNum.gridy = 8;
+		panel_1.add(TFCNum, gbc_TFCNum);
+		TFCNum.setColumns(10);
 		
-		JLabel lblNewLabel_10 = new JLabel("\uAC1C\uCCB4\uAC80\uC0C9");
-		GridBagConstraints gbc_lblNewLabel_10 = new GridBagConstraints();
-		gbc_lblNewLabel_10.insets = new Insets(0, 0, 5, 0);
-		gbc_lblNewLabel_10.gridx = 1;
-		gbc_lblNewLabel_10.gridy = 9;
-		panel_1.add(lblNewLabel_10, gbc_lblNewLabel_10);
+		JLabel EditWeight = new JLabel("변경무게");
+		GridBagConstraints gbc_EditWeight = new GridBagConstraints();
+		gbc_EditWeight.anchor = GridBagConstraints.EAST;
+		gbc_EditWeight.insets = new Insets(0, 0, 5, 5);
+		gbc_EditWeight.gridx = 0;
+		gbc_EditWeight.gridy = 9;
+		panel_1.add(EditWeight, gbc_EditWeight);
 		
-		JLabel lblNewLabel_11 = new JLabel("\uAC1C\uCCB4\uBC88\uD638");
-		GridBagConstraints gbc_lblNewLabel_11 = new GridBagConstraints();
-		gbc_lblNewLabel_11.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_11.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_11.gridx = 0;
-		gbc_lblNewLabel_11.gridy = 10;
-		panel_1.add(lblNewLabel_11, gbc_lblNewLabel_11);
+		EditTFWeight = new JTextField();
+		GridBagConstraints gbc_EditTFWeight = new GridBagConstraints();
+		gbc_EditTFWeight.insets = new Insets(0, 0, 5, 0);
+		gbc_EditTFWeight.fill = GridBagConstraints.HORIZONTAL;
+		gbc_EditTFWeight.gridx = 1;
+		gbc_EditTFWeight.gridy = 9;
+		panel_1.add(EditTFWeight, gbc_EditTFWeight);
+		EditTFWeight.setColumns(10);
 		
-		textField_7 = new JTextField();
-		GridBagConstraints gbc_textField_7 = new GridBagConstraints();
-		gbc_textField_7.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_7.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_7.gridx = 1;
-		gbc_textField_7.gridy = 10;
-		panel_1.add(textField_7, gbc_textField_7);
-		textField_7.setColumns(10);
+		JLabel Cnum = new JLabel("교체횟수");
+		GridBagConstraints gbc_Cnum = new GridBagConstraints();
+		gbc_Cnum.anchor = GridBagConstraints.EAST;
+		gbc_Cnum.insets = new Insets(0, 0, 5, 5);
+		gbc_Cnum.gridx = 0;
+		gbc_Cnum.gridy = 10;
+		panel_1.add(Cnum, gbc_Cnum);
 		
-		JLabel lblNewLabel_12 = new JLabel("\uBB34\uAC8C");
-		GridBagConstraints gbc_lblNewLabel_12 = new GridBagConstraints();
-		gbc_lblNewLabel_12.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel_12.anchor = GridBagConstraints.EAST;
-		gbc_lblNewLabel_12.gridx = 0;
-		gbc_lblNewLabel_12.gridy = 11;
-		panel_1.add(lblNewLabel_12, gbc_lblNewLabel_12);
+		TFICENum = new JTextField();
+		GridBagConstraints gbc_TFICENum = new GridBagConstraints();
+		gbc_TFICENum.insets = new Insets(0, 0, 5, 0);
+		gbc_TFICENum.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFICENum.gridx = 1;
+		gbc_TFICENum.gridy = 10;
+		panel_1.add(TFICENum, gbc_TFICENum);
+		TFICENum.setColumns(10);
 		
-		textField_8 = new JTextField();
-		GridBagConstraints gbc_textField_8 = new GridBagConstraints();
-		gbc_textField_8.insets = new Insets(0, 0, 5, 0);
-		gbc_textField_8.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_8.gridx = 1;
-		gbc_textField_8.gridy = 11;
-		panel_1.add(textField_8, gbc_textField_8);
-		textField_8.setColumns(10);
+		JLabel DeleteL = new JLabel("개체제거");
+		GridBagConstraints gbc_DeleteL = new GridBagConstraints();
+		gbc_DeleteL.insets = new Insets(0, 0, 5, 0);
+		gbc_DeleteL.gridx = 1;
+		gbc_DeleteL.gridy = 11;
+		panel_1.add(DeleteL, gbc_DeleteL);
 		
-		JLabel lblNewLabel_13 = new JLabel("\uAC1C\uCCB4\uC0AD\uC81C");
-		GridBagConstraints gbc_lblNewLabel_13 = new GridBagConstraints();
-		gbc_lblNewLabel_13.gridx = 1;
-		gbc_lblNewLabel_13.gridy = 12;
-		panel_1.add(lblNewLabel_13, gbc_lblNewLabel_13);
+		JLabel DeleteId = new JLabel("제거번호");
+		GridBagConstraints gbc_DeleteId = new GridBagConstraints();
+		gbc_DeleteId.anchor = GridBagConstraints.EAST;
+		gbc_DeleteId.insets = new Insets(0, 0, 5, 5);
+		gbc_DeleteId.gridx = 0;
+		gbc_DeleteId.gridy = 12;
+		panel_1.add(DeleteId, gbc_DeleteId);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		splitPane.setRightComponent(scrollPane);
-		
-		table = new JTable();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"\uAC1C\uCCB4\uBC88\uD638", "\uAC1C\uCCB4\uC774\uB984", "\uBB34\uAC8C", "\uBA39\uC774\uC885\uB958", "\uAD50\uCCB4\uD69F\uC218", "\uD22C\uC785\uC77C"
-			}
-		));
-		scrollPane.setViewportView(table);
+		DeleteIdTF = new JTextField();
+		GridBagConstraints gbc_DeleteIdTF = new GridBagConstraints();
+		gbc_DeleteIdTF.insets = new Insets(0, 0, 5, 0);
+		gbc_DeleteIdTF.fill = GridBagConstraints.HORIZONTAL;
+		gbc_DeleteIdTF.gridx = 1;
+		gbc_DeleteIdTF.gridy = 12;
+		panel_1.add(DeleteIdTF, gbc_DeleteIdTF);
+		DeleteIdTF.setColumns(10);
 		
 
 		frame.setVisible(true);
 	}
+
 }

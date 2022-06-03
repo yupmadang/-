@@ -1,10 +1,7 @@
 package breedingManagement;
 
 public class DryInsect extends Insect{//추상클래스를 상속 받는 자식클래스
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -5610027249538293148L;
 	private double length;
 	private String quality;
@@ -58,10 +55,5 @@ public class DryInsect extends Insect{//추상클래스를 상속 받는 자식클래스
 
 	public void setLabel(String label) {
 		this.label = label;
-	}
-	
-	@Override//추상클래스에 있던 메서드를 오버라이드
-	public String toString() {
-		return "[표본 번호 : "+ id + ", 표본명 : " + name +", "+"길이 : "+length+"mm, 상태: "+quality+", 라벨 : "+label+"]";
 	}
 }
