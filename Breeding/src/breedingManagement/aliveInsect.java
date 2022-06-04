@@ -63,8 +63,4 @@ public class aliveInsect extends Insect{//추상클래스를 상속 받은 자식클래스
 	public void setDate(String date) {
 		this.date = date;	
 	}
-	
-	public String toString() {
-		return id+name+weight+name2+num+date;
-	}
 }

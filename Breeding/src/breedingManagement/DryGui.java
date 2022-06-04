@@ -119,6 +119,7 @@ public class DryGui implements ActionListener{
 				TFLabel.setText("");
 				//model을 활용한 리스트에 반영
 				model.addRow(vec);
+				logger.log(id+"를 추가하였습니다.");
 				table.updateUI();
 			}
 		});
@@ -154,6 +155,7 @@ public class DryGui implements ActionListener{
 							}
 						}
 					}
+					logger.log(id+"를 제거하였습니다.");
 				}catch (Exception e1) {
 					return;
 				}
@@ -176,6 +178,7 @@ public class DryGui implements ActionListener{
 							logger.PutObject();
 						}
 					}
+					logger.log("상태를 수정하였습니다.");
 				}catch (NumberFormatException e2) {
 					return;
 				}
@@ -207,6 +210,7 @@ public class DryGui implements ActionListener{
 					if(!vec.get(0).isEmpty()) {
 					model.addRow(vec);
 					}
+					logger.log("객체를 불러왔습니다.");
 				}catch (ArrayIndexOutOfBoundsException e1) {
 					return;
 				}
@@ -231,6 +235,7 @@ public class DryGui implements ActionListener{
 						table.updateUI();
 					}
 				}catch(ArrayIndexOutOfBoundsException e1) {
+					logger.log("리스트를 초기화하였습니다.");
 					return;
 				}
 				

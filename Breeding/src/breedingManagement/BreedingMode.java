@@ -10,10 +10,6 @@ public class BreedingMode implements Serializable{
 	static LogClass logger = new LogClass("log.txt");
 	private static final long serialVersionUID = 3499476101535632006L;
 	
-	//인터페이스를 다중상속 받은 BreedingMode클래스
-	//객체를 저장할 링크드리스트 3개 선언
-
-	
 	//개체추가, 제거, 출력을 위한 객체와 편집을 위한 객체 생성
 	aliveInsect ins; 
 	aliveInsect edit = new aliveInsect();
@@ -40,19 +36,6 @@ public class BreedingMode implements Serializable{
 			e.printStackTrace();
 		}
 	}
-	
-	public int size() {
-		return logger.getINList().size();
-	}
-	
-	public aliveInsect get(int idx) {
-		return logger.getINList().get(idx); 
-	}
-	
-	
-	//참조한  인터페이스의 메서드 BreedingInterface
-	
-
 	
 	public void	Delete_Insect(int id) {//개체 삭제 메서드 구현
 		for(int i = 0; i < logger.getINList().size(); i++) {

@@ -108,6 +108,7 @@ public class GUIMenu {
 				//원본 파일에 저장
 				logger.getINList().add(new aliveInsect(Integer.parseInt(id), name, Double.parseDouble(weight), name2, Integer.parseInt(num),date));
 				logger.PutObject();
+				logger.log("변경 사항이 저장됨");
 				
 				vec.add(id);
 				vec.add(name);
@@ -125,6 +126,7 @@ public class GUIMenu {
 				//테이블에 값을 저장
 				model.addRow(vec);
 				table.updateUI();
+				logger.log(id+"가 추가됨");
 			}
 		});
 		panel.add(Add);
@@ -148,6 +150,7 @@ public class GUIMenu {
 							table.updateUI();
 						}
 					}
+					logger.log(id+"이 제거됨");
 				}catch (Exception e1) {
 					return;
 				}
@@ -165,9 +168,15 @@ public class GUIMenu {
 				for(int i = 0; i < logger.getINList().size(); i++) {
 					if(logger.getINList().get(i).getId() == Integer.parseInt(id)) {
 						breedingMode.Edit_Insect(Integer.parseInt(id), Double.parseDouble(weight), Integer.parseInt(num));
+						for(int j = 0; j < model.getRowCount();j++) {
+							model.setValueAt(weight, i, 2);
+							model.setValueAt(num, i, 4);
+						}
 						table.updateUI();
+						
 					}
 				}
+				logger.log(id+"의 무게와 교체횟수가 변경되었습니다.");
 			}
 		});
 		panel.add(Edit);
@@ -177,6 +186,7 @@ public class GUIMenu {
 			public void actionPerformed(ActionEvent e) {
 				@SuppressWarnings("unused")
 				DryGui dryGui = new DryGui();
+				logger.log("표본모드로 진입합니다");
 			}
 		});
 		panel.add(DryMode);
@@ -186,6 +196,7 @@ public class GUIMenu {
 			public void actionPerformed(ActionEvent e) {
 				@SuppressWarnings("unused")
 				ManualGui manual = new ManualGui();
+				logger.log("설명서를 열었습니다");
 			}
 		});
 		//원본 리스트에 있는 객체를 불러와 테이블에 출력
@@ -212,7 +223,7 @@ public class GUIMenu {
 					vec.add(name1.get(i).getDate());
 					model.addRow(vec);
 				}
-
+				logger.log("개체를 불러왔습니다.");
 				table.updateUI();
 			}
 		});
@@ -226,6 +237,7 @@ public class GUIMenu {
 					for(int i = 0;; i++) {
 						model.removeRow(i);
 						table.updateUI();
+						logger.log("목록을 초기화 하였습니다.");
 					}
 				}catch(ArrayIndexOutOfBoundsException e1) {
 					return ;
@@ -240,6 +252,7 @@ public class GUIMenu {
 		End.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				logger.PutObject();
+				logger.log("시스템을 종료합니다.");
 				System.exit(0);
 			}
 		});
