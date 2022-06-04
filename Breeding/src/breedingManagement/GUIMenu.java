@@ -13,7 +13,6 @@ import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import javax.swing.JSplitPane;
 import java.awt.event.ActionListener;
-import java.lang.System.Logger;
 import java.util.LinkedList;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
@@ -41,13 +40,13 @@ public class GUIMenu {
 	private JTextField TFICENum;
 	BreedingMode breedingMode = new BreedingMode();
 	LogClass logger = new LogClass("log.txt");
-
+	//원본 파일을 불러온 name리스트
 	LinkedList<aliveInsect> name = logger.getINList();
 
 	public GUIMenu(String num) {
 		initialize();
 	}
-	
+	//gui 생성 및 동작 메서드
 	private void initialize() {
 		
 		frame = new JFrame();
@@ -57,7 +56,7 @@ public class GUIMenu {
 		frame.setTitle("YID-Project(My Insect Diary)");
 		frame.setResizable(true);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-
+		//테이블 생성과 column 설정
 		table = new JTable();
 		table.setEnabled(false);
 		Object []column = {"개체번호","개체이름","개체무게","먹이종류","교체횟수","투입일"};
@@ -85,18 +84,19 @@ public class GUIMenu {
 		JPanel panel = new JPanel();
 		splitPane_1.setRightComponent(panel);
 		panel.setLayout(new GridLayout(0, 1, 0, 0));
-		
+		//개체 추가 버튼
 		JButton Add = new JButton("개체추가");			
 		Add.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Vector<String> vec = new Vector<>();
-				LinkedList<aliveInsect> list = logger.getINList();
 				String id = TFId.getText();
+				//같은 번호가 있는 경우 추가 하지 않음
 				for(aliveInsect i : logger.getINList()) {
 					if((""+i.getId()).equals(id)) {
 						return;
 					}
 				}
+				//번호란이 빈 경우 추가하지 않음
 				if(TFId.getText().isEmpty()) {
 					return;
 				}
@@ -105,8 +105,9 @@ public class GUIMenu {
 				String name2 = TFMeal.getText();
 				String num = TFICNum.getText();
 				String date = TFDate.getText();
-				
+				//원본 파일에 저장
 				logger.getINList().add(new aliveInsect(Integer.parseInt(id), name, Double.parseDouble(weight), name2, Integer.parseInt(num),date));
+				logger.PutObject();
 				
 				vec.add(id);
 				vec.add(name);
@@ -121,39 +122,46 @@ public class GUIMenu {
 				TFMeal.setText("");
 				TFICNum.setText("");
 				TFDate.setText("");
-				
+				//테이블에 값을 저장
 				model.addRow(vec);
 				table.updateUI();
 			}
 		});
 		panel.add(Add);
-		
+		//개체으 아이디와 일치하는 row를 삭제하는 메서드
 		JButton Delete = new JButton("개체제거");
 		Delete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
 					String id = DeleteIdTF.getText();
 					for(aliveInsect i : logger.getINList()) {
+						//아이디가 같은 경우 그 값을 원본 리스트에서 제거
 						if((""+i.getId()).equals(id)) {
 							logger.getINList().remove(i);
-							table.updateUI();
 							return;
 						}
 					}
-					table.updateUI();
+					for(int i = 0; i < model.getRowCount(); i++) {
+						//테이블의 row를 순회하고 테이블에서 제거 후 갱신
+						if(model.getValueAt(i, 0).equals(id)) {
+							model.removeRow(i);
+							table.updateUI();
+						}
+					}
 				}catch (Exception e1) {
 					return;
 				}
 			}
 		});
 		panel.add(Delete);
-		
+		//개체의 무게와 교체횟수를 변경하는 메서드
 		JButton Edit = new JButton("개체편집");
 		Edit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String id = TFCNum.getText(); 
 				String weight = EditTFWeight.getText();
 				String num = TFICENum.getText();
+				//원본리스트를 순회하고 일치하는 아이디의 무게와 교체 횟수를 변경
 				for(int i = 0; i < logger.getINList().size(); i++) {
 					if(logger.getINList().get(i).getId() == Integer.parseInt(id)) {
 						breedingMode.Edit_Insect(Integer.parseInt(id), Double.parseDouble(weight), Integer.parseInt(num));
@@ -163,7 +171,7 @@ public class GUIMenu {
 			}
 		});
 		panel.add(Edit);
-		
+		//표본관리 gui를 호출
 		JButton DryMode = new JButton("표본모드");
 		DryMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -172,7 +180,7 @@ public class GUIMenu {
 			}
 		});
 		panel.add(DryMode);
-		
+		//설명서 gui호출
 		JButton Manual = new JButton("설명서");
 		Manual.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -180,7 +188,7 @@ public class GUIMenu {
 				ManualGui manual = new ManualGui();
 			}
 		});
-		
+		//원본 리스트에 있는 객체를 불러와 테이블에 출력
 		JButton View = new JButton("목록출력");
 		View.addActionListener(new ActionListener() {
 			@SuppressWarnings("unchecked")
@@ -209,8 +217,25 @@ public class GUIMenu {
 			}
 		});
 		panel.add(View);
+		//초기화 메서드
+		JButton Clear = new JButton("초기화");
+		Clear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//원본 리스트의 변경 없이 사용자가 본ㄴ 테이블만 초기화하는 메서드
+				try {
+					for(int i = 0;; i++) {
+						model.removeRow(i);
+						table.updateUI();
+					}
+				}catch(ArrayIndexOutOfBoundsException e1) {
+					return ;
+				}
+				
+			}
+		});
+		panel.add(Clear);
 		panel.add(Manual);
-		
+		//종료를 하고 변경된 사항을 저장하는 메서드
 		JButton End = new JButton("종료");
 		End.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -220,6 +245,8 @@ public class GUIMenu {
 		});
 		panel.add(End);
 		
+		
+		//gui배치, 구성에 관련된 부분
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		

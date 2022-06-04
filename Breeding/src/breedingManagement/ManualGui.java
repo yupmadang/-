@@ -21,7 +21,7 @@ public class ManualGui implements ActionListener{
 	public ManualGui() {
 		initialize();
 	}
-
+	//설명서gui를 생성하는 메서드
 	private void initialize() {
 		frame = new JFrame();
 		frame.setType(Type.UTILITY);
@@ -37,6 +37,7 @@ public class ManualGui implements ActionListener{
 		frame.getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
 		textArea = new JTextArea();
+		textArea.setEditable(false);
 		textArea.append(manual.getManual());
 		scrollPane.setViewportView(textArea);
 		
