@@ -107,6 +107,12 @@ public class DryGui extends MouseAdapter{
 				if(TFId.getText().isEmpty()) {
 					return;
 				}
+				for(DryInsect i : logger.getDIList()) {
+					if((""+i.getId()).equals(id)) {
+						return;
+					}
+				}
+
 				String name = TFName.getText();
 				String len = TFLen.getText();
 				String state = TFState.getText();
@@ -178,16 +184,15 @@ public class DryGui extends MouseAdapter{
 				try{
 					for(int i = 0; i < logger.getDIList().size(); i++) {
 						int id = Integer.parseInt(TFEId.getText()); 
-						String label = TFELabel.getText(); 
 						String state = TFEState.getText(); 
 					
-						if(logger.getDIList().get(i).getId() == id && logger.getDIList().get(i).getLabel().equals(label)) {
+						if(logger.getDIList().get(i).getId() == id) {
 							for(int j = 0; j < logger.getDIList().size(); j++) {
 								edit3.setId(id);
 								edit3.setName(logger.getDIList().get(j).getName());
 								edit3.setLength(logger.getDIList().get(j).getLength());
 								edit3.setQuality(state);
-								edit3.setLabel(label);
+								edit3.setLabel(logger.getDIList().get(j).getLabel());
 								logger.getDIList().set(j, edit3);
 								for(int k = 0; k < model.getRowCount();k++) {
 									model.setValueAt(state, i, 3);
@@ -197,6 +202,8 @@ public class DryGui extends MouseAdapter{
 							logger.PutObject();
 						}
 					}
+					TFEId.setText("");
+					TFEState.setText("");
 					logger.log("상태를 수정하였습니다.");
 				}catch (NumberFormatException e2) {
 					return;

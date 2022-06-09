@@ -150,6 +150,7 @@ public class GUIMenu {
 							table.updateUI();
 						}
 					}
+					DeleteIdTF.setText("");
 					logger.log(id+"이 제거됨");
 				}catch (Exception e1) {
 					return;
@@ -182,7 +183,10 @@ public class GUIMenu {
 						table.updateUI();
 						break;
 					}
-				}	
+				}
+				TFCNum.setText(""); 
+			    EditTFWeight.setText("");
+				TFICENum.setText("");
 				logger.log(id+"의 무게와 교체횟수가 변경되었습니다.");
 			}
 		});
