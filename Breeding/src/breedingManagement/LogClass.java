@@ -63,7 +63,6 @@ public class LogClass implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
 	//파일생성메서드 : 프로젝트가 종료되면 업데이트
 		public void PutObject() { 
 			try {

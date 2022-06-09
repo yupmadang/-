@@ -3,7 +3,6 @@ package breedingManagement;
 public class AliveInsect extends Insect{//추상클래스를 상속 받은 자식클래스
 	//직렬화에 사용하는 클래스에 붙는 시리얼코드
 	private static final long serialVersionUID = -9090613252482453288L;
-
 	public AliveInsect(int id, String name, double weight, String name2, int num, String date) {//초기화를 위한 생성자 생성
 		this.id = id;
 		this.name = name;

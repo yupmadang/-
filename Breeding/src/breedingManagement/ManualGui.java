@@ -12,7 +12,6 @@ import javax.swing.JTextArea;
 import java.awt.Window.Type;
 
 public class ManualGui implements ActionListener{
-
 	private JFrame frame;
 	public Manual manual  = new Manual();
 	private JTextArea textArea;

@@ -13,7 +13,6 @@ public class GuiMain {
 				try {
 					@SuppressWarnings("unused")
 					GUIMenu window = new GUIMenu(null);
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

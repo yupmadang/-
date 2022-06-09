@@ -25,7 +25,6 @@ import java.awt.SystemColor;
 import javax.swing.JScrollPane;
 
 public class GUIMenu {
-
 	private JFrame frame;
 	private JTable table;
 	private JTextField TFName;

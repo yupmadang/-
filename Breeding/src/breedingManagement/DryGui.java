@@ -47,6 +47,7 @@ public class DryGui extends MouseAdapter{
 	public DryGui() {
 		initialize();
 	}
+	
 	//gui를 구성하는 initialize메서드
 	private void initialize() {
 		frame = new  JFrame();

@@ -51,7 +51,6 @@ public class Manual implements Serializable{
 			e.printStackTrace();
 		}
 	}
-	
 	public String getManual() {
 		return manual;
 	}
