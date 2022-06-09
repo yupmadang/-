@@ -1,7 +1,7 @@
 package breedingManagement;
 
 public class DryInsect extends Insect{//추상클래스를 상속 받는 자식클래스
-
+	//직렬화에 사용하는 클래스에 붙는 시리얼코드
 	private static final long serialVersionUID = -5610027249538293148L;
 	private double length;
 	private String quality;
@@ -14,9 +14,9 @@ public class DryInsect extends Insect{//추상클래스를 상속 받는 자식클래스
 		this.quality =quality;
 		this.label = label;
 	}
-	
+	//표본 편집에 사용하는 디폴트 생성자
 	public DryInsect() {}
-	
+	//get, set메서드
 	public int getId() {
 		return id;
 	}
