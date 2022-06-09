@@ -8,8 +8,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -24,7 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Window.Type;
 
-public class DryGui implements ActionListener{
+public class DryGui extends MouseAdapter{
 	private JFrame frame;
 	private JTable table;
 	private JTextField TFName;
@@ -32,8 +32,9 @@ public class DryGui implements ActionListener{
 	private JTextField TFLen;
 	private JTextField TFState;
 	private JTextField TFLabel;
+	
 	//파일에서 값을 불러오고 추가하기 위한 선언
-	BreedingMode breedingMode = new BreedingMode();
+	DryInsect edit3 = new DryInsect();
 	LogClass logger = new LogClass("log.txt");
 	private JTextField TFDId;
 	private JTextField TFDLen;
@@ -41,6 +42,7 @@ public class DryGui implements ActionListener{
 	private JTextField TFEId;
 	private JTextField TFELabel;
 	private JTextField TFEState;
+	
 	//gui생성자
 	public DryGui() {
 		initialize();
@@ -51,6 +53,7 @@ public class DryGui implements ActionListener{
 		frame.setType(Type.UTILITY);
 		frame.setBounds(100, 100, 450, 300);
 		frame.setSize(1000, 500);
+		frame.setTitle("DryInsectMode");
 		frame.setResizable(false);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
 		
@@ -94,8 +97,8 @@ public class DryGui implements ActionListener{
 		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		//표본 추가 버튼
 		JButton Add = new JButton("표본추가");
-		Add.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Add.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				//추가를 위한 벡터 선언
 				Vector<String> vec = new Vector<>();
 				String id = TFId.getText();
@@ -132,8 +135,8 @@ public class DryGui implements ActionListener{
 		panel.add(Add);
 		
 		JButton Delete = new JButton("표본제거");
-		Delete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Delete.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				try{
 					String id = TFDId.getText();
 					String label = TFDLabel.getText();
@@ -168,8 +171,8 @@ public class DryGui implements ActionListener{
 		panel.add(Delete);
 		//표본 상태를 관리하기 위한 이벤트 처리
 		JButton Edit = new JButton("표본수정");
-		Edit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Edit.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				//파일에 저장된 객체를 순회하여 일치하는 값이 있을 경우 state로 상채를 갱신함
 				try{
 					for(int i = 0; i < logger.getDIList().size(); i++) {
@@ -178,7 +181,18 @@ public class DryGui implements ActionListener{
 						String state = TFEState.getText(); 
 					
 						if(logger.getDIList().get(i).getId() == id && logger.getDIList().get(i).getLabel().equals(label)) {
-							breedingMode.Edit_Insect(id, label, state);
+							for(int j = 0; j < logger.getDIList().size(); j++) {
+								edit3.setId(id);
+								edit3.setName(logger.getDIList().get(j).getName());
+								edit3.setLength(logger.getDIList().get(j).getLength());
+								edit3.setQuality(state);
+								edit3.setLabel(label);
+								logger.getDIList().set(j, edit3);
+								for(int k = 0; k < model.getRowCount();k++) {
+									model.setValueAt(state, i, 3);
+								} 
+								table.updateUI();
+							}
 							logger.PutObject();
 						}
 					}
@@ -197,8 +211,8 @@ public class DryGui implements ActionListener{
 		panel.add(Edit);
 		//파일에 가진 객체를 모두 테이블에 불러오는 버튼
 		JButton View = new JButton("표본출력");
-		View.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		View.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				try{
 					Vector<String> vec = new Vector<>();
 					for(int i = 0; i < logger.getDIList().size(); i++) {
@@ -210,7 +224,7 @@ public class DryGui implements ActionListener{
 					}
 				
 					if(!vec.get(0).isEmpty()) {
-					model.addRow(vec);
+						model.addRow(vec);
 					}
 					logger.log("객체를 불러왔습니다.");
 				}catch (ArrayIndexOutOfBoundsException e1) {
@@ -229,8 +243,8 @@ public class DryGui implements ActionListener{
 		panel.add(View);
 		//초기화 버튼: 사용자가 테이블이 너무 길어진 경우 이를 통해 테이블을 초기상태로 돌림
 		JButton Clear = new JButton("초기화");
-		Clear.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Clear.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				try{
 					for(int i = 0;; i++) {
 						model.removeRow(i);
@@ -456,11 +470,4 @@ public class DryGui implements ActionListener{
 		TFEState.setColumns(10);
 		frame.setVisible(true);
 	}
-
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-	}
-
 }

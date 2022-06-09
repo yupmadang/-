@@ -19,11 +19,11 @@ public class LogClass implements Serializable {
 	LogManager logManager;
 	Logger logger;
 	//원본리스트는 인위적 변경을 불허함
-	private static LinkedList<aliveInsect> Info_Name = new LinkedList<>();
+	private static LinkedList<AliveInsect> Info_Name = new LinkedList<>();
 	private static LinkedList<DryInsect> Info_DryInsect = new LinkedList<>();
 	
 	//원본리스트를 호출하는 메서드
-	public LinkedList<aliveInsect> getINList(){
+	public LinkedList<AliveInsect> getINList(){
 		return Info_Name;
 	}
 	public LinkedList<DryInsect> getDIList(){
@@ -51,7 +51,7 @@ public class LogClass implements Serializable {
 			//원본리스트의 객체를 불러옴
 			file = new FileInputStream("Breeding.txt");
 			ObjectInputStream in = new ObjectInputStream(file);
-			Info_Name = (LinkedList<aliveInsect>)in.readObject();
+			Info_Name = (LinkedList<AliveInsect>)in.readObject();
 			Info_DryInsect = (LinkedList<DryInsect>)in.readObject();
 			in.close();
 			file.close();

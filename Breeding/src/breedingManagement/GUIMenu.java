@@ -12,10 +12,10 @@ import java.awt.Color;
 import javax.swing.JButton;
 import java.awt.GridBagLayout;
 import javax.swing.JSplitPane;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.Vector;
-import java.awt.event.ActionEvent;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 import javax.swing.JTable;
@@ -38,10 +38,11 @@ public class GUIMenu {
 	private JTextField TFICNum;
 	private JTextField TFDate;
 	private JTextField TFICENum;
-	BreedingMode breedingMode = new BreedingMode();
+	
+	AliveInsect edit = new AliveInsect();
 	LogClass logger = new LogClass("log.txt");
 	//원본 파일을 불러온 name리스트
-	LinkedList<aliveInsect> name = logger.getINList();
+	LinkedList<AliveInsect> name = logger.getINList();
 
 	public GUIMenu(String num) {
 		initialize();
@@ -86,12 +87,12 @@ public class GUIMenu {
 		panel.setLayout(new GridLayout(0, 1, 0, 0));
 		//개체 추가 버튼
 		JButton Add = new JButton("개체추가");			
-		Add.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Add.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				Vector<String> vec = new Vector<>();
 				String id = TFId.getText();
 				//같은 번호가 있는 경우 추가 하지 않음
-				for(aliveInsect i : logger.getINList()) {
+				for(AliveInsect i : logger.getINList()) {
 					if((""+i.getId()).equals(id)) {
 						return;
 					}
@@ -106,7 +107,7 @@ public class GUIMenu {
 				String num = TFICNum.getText();
 				String date = TFDate.getText();
 				//원본 파일에 저장
-				logger.getINList().add(new aliveInsect(Integer.parseInt(id), name, Double.parseDouble(weight), name2, Integer.parseInt(num),date));
+				logger.getINList().add(new AliveInsect(Integer.parseInt(id), name, Double.parseDouble(weight), name2, Integer.parseInt(num),date));
 				logger.PutObject();
 				logger.log("변경 사항이 저장됨");
 				
@@ -132,11 +133,11 @@ public class GUIMenu {
 		panel.add(Add);
 		//개체으 아이디와 일치하는 row를 삭제하는 메서드
 		JButton Delete = new JButton("개체제거");
-		Delete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Delete.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				try{
 					String id = DeleteIdTF.getText();
-					for(aliveInsect i : logger.getINList()) {
+					for(AliveInsect i : logger.getINList()) {
 						//아이디가 같은 경우 그 값을 원본 리스트에서 제거
 						if((""+i.getId()).equals(id)) {
 							logger.getINList().remove(i);
@@ -159,41 +160,49 @@ public class GUIMenu {
 		panel.add(Delete);
 		//개체의 무게와 교체횟수를 변경하는 메서드
 		JButton Edit = new JButton("개체편집");
-		Edit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Edit.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				String id = TFCNum.getText(); 
 				String weight = EditTFWeight.getText();
 				String num = TFICENum.getText();
+				
 				//원본리스트를 순회하고 일치하는 아이디의 무게와 교체 횟수를 변경
 				for(int i = 0; i < logger.getINList().size(); i++) {
 					if(logger.getINList().get(i).getId() == Integer.parseInt(id)) {
-						breedingMode.Edit_Insect(Integer.parseInt(id), Double.parseDouble(weight), Integer.parseInt(num));
+						edit.setId(logger.getINList().get(i).getId());
+						edit.setName(logger.getINList().get(i).getName());
+						edit.setName2(logger.getINList().get(i).getName2());
+						edit.setDate(logger.getINList().get(i).getDate());
+						edit.setWeight(Double.parseDouble(weight));
+						edit.setNum(Integer.parseInt(num));
+						logger.getINList().set(i, edit);
 						for(int j = 0; j < model.getRowCount();j++) {
 							model.setValueAt(weight, i, 2);
 							model.setValueAt(num, i, 4);
-						}
+						} 
 						table.updateUI();
-						
+						break;
 					}
-				}
+				}	
 				logger.log(id+"의 무게와 교체횟수가 변경되었습니다.");
 			}
 		});
 		panel.add(Edit);
 		//표본관리 gui를 호출
 		JButton DryMode = new JButton("표본모드");
-		DryMode.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		DryMode.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				@SuppressWarnings("unused")
 				DryGui dryGui = new DryGui();
 				logger.log("표본모드로 진입합니다");
 			}
 		});
+			
 		panel.add(DryMode);
 		//설명서 gui호출
 		JButton Manual = new JButton("설명서");
-		Manual.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Manual.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				@SuppressWarnings("unused")
 				ManualGui manual = new ManualGui();
 				logger.log("설명서를 열었습니다");
@@ -201,10 +210,10 @@ public class GUIMenu {
 		});
 		//원본 리스트에 있는 객체를 불러와 테이블에 출력
 		JButton View = new JButton("목록출력");
-		View.addActionListener(new ActionListener() {
+		View.addMouseListener(new MouseAdapter() {
 			@SuppressWarnings("unchecked")
-			public void actionPerformed(ActionEvent e) {
-				LinkedList<aliveInsect> name1 = logger.getINList();
+			public void mouseClicked(MouseEvent e) {
+				LinkedList<AliveInsect> name1 = logger.getINList();
 				try{
 					if(name1.isEmpty()) {
 						return;
@@ -230,8 +239,8 @@ public class GUIMenu {
 		panel.add(View);
 		//초기화 메서드
 		JButton Clear = new JButton("초기화");
-		Clear.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		Clear.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				//원본 리스트의 변경 없이 사용자가 본ㄴ 테이블만 초기화하는 메서드
 				try {
 					for(int i = 0;; i++) {
@@ -249,8 +258,8 @@ public class GUIMenu {
 		panel.add(Manual);
 		//종료를 하고 변경된 사항을 저장하는 메서드
 		JButton End = new JButton("종료");
-		End.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		End.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
 				logger.PutObject();
 				logger.log("시스템을 종료합니다.");
 				System.exit(0);

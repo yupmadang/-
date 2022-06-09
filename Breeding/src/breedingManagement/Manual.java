@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 //설명서 정보를 담는 클래스, 파일을 생성하고 설명을 저장하는 클래스
 public class Manual implements Serializable{
-
+	//직렬화에 사용하는 클래스에 붙는 시리얼코드
 	private static final long serialVersionUID = 2082895451081071795L;
 	private String manual = "-----이 프로젝트의 사용법 및 규칙-----\r\n"+
 	"\r\n\r\n1. 생체 아이디 작성법(안지켜도 무관)\r\n"+
@@ -36,6 +36,7 @@ public class Manual implements Serializable{
 	"라벨은 표본의 진위를 가리는 데이터로 매우 중요하므로\r\n"+
 	"(학명/이름/크기/날짜/지역)을 적을 것 띄어쓰기 불필요\r\n"+
 	"자 나머지는 메뉴에 따라서 자유롭게 쓰시면 됩니다.\r\n"+
+	
 	"사용 전에는 먼저 개체 출력으로 창을 초기화하시고 사용하시면 됩니다.\r\n"+
 	"사용 중에 테이블이 너무 복잡하면 초기화 버튼으로 테이블을 비우고 사용하시면 깔끔하게 사용이 가능합니다.\r\n"+
 	"그럼 이만\r\n";
