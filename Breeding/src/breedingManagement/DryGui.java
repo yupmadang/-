@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -148,28 +149,27 @@ public class DryGui extends MouseAdapter{
 					String id = TFDId.getText();
 					String label = TFDLabel.getText();
 					String len = TFDLen.getText();
+					
 					//3가지 표본 정보와 일치할 경우 파일에서 그 객체를 제거
 					for(DryInsect i : logger.getDIList()) {
 						if((""+i.getId()).equals(id) && i.getLabel().equals(label) && i.getLength() == Double.parseDouble(len)) {
 							logger.getDIList().remove(i);
+							logger.log(id+"를 제거하였습니다.");
 							table.updateUI();
-							
-							try{
-								//객체가 제거된 후 테이블 갱신
-								for(int j = 0;;j++) {
-									model.removeRow(j);
-									TFDId.setText("");
-									TFDLen.setText("");
-									TFDLabel.setText("");
-									table.updateUI();
-								}
-								
-							}catch (ArrayIndexOutOfBoundsException e2) {
-								return;
-							}
 						}
 					}
-					logger.log(id+"를 제거하였습니다.");
+					//객체가 제거된 후 테이블 갱신
+					for(int j = 0; j < model.getRowCount(); j++) {
+						if(model.getValueAt(j, 0).equals(id) && model.getValueAt(j, 2).equals(len) && model.getValueAt(j, 4).equals(label)) {
+							model.removeRow(j);
+							table.updateUI();
+						}
+						
+					}
+					TFDId.setText("");
+					TFDLen.setText("");
+					TFDLabel.setText("");
+					
 				}catch (Exception e1) {
 					return;
 				}
@@ -221,17 +221,15 @@ public class DryGui extends MouseAdapter{
 		JButton View = new JButton("표본출력");
 		View.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
+				LinkedList<DryInsect> name1 = logger.getDIList();
 				try{
-					Vector<String> vec = new Vector<>();
-					for(int i = 0; i < logger.getDIList().size(); i++) {
-						vec.add(Integer.toString(logger.getDIList().get(i).getId()));
-						vec.add(logger.getDIList().get(i).getName());
-						vec.add(Double.toString(logger.getDIList().get(i).getLength()));
-						vec.add(logger.getDIList().get(i).getQuality());
-						vec.add(logger.getDIList().get(i).getLabel());
-					}
-				
-					if(!vec.get(0).isEmpty()) {
+					for(int i = 0; i < name1.size(); i++) {
+						Vector<String> vec = new Vector<>();
+						vec.add(Integer.toString(name1.get(i).getId()));
+						vec.add(name1.get(i).getName());
+						vec.add(Double.toString(name1.get(i).getLength()));
+						vec.add(name1.get(i).getQuality());
+						vec.add(name1.get(i).getLabel());
 						model.addRow(vec);
 					}
 					logger.log("객체를 불러왔습니다.");

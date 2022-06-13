@@ -14,6 +14,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JSplitPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.GeneralPath;
 import java.util.LinkedList;
 import java.util.Vector;
 import javax.swing.JScrollBar;
@@ -37,12 +38,13 @@ public class GUIMenu {
 	private JTextField TFICNum;
 	private JTextField TFDate;
 	private JTextField TFICENum;
+	private JTextField TFgeneration;
 	
 	AliveInsect edit = new AliveInsect();
 	LogClass logger = new LogClass("log.txt");
 	//원본 파일을 불러온 name리스트
 	LinkedList<AliveInsect> name = logger.getINList();
-
+	
 	public GUIMenu(String num) {
 		initialize();
 	}
@@ -59,10 +61,16 @@ public class GUIMenu {
 		//테이블 생성과 column 설정
 		table = new JTable();
 		table.setEnabled(false);
-		Object []column = {"개체번호","개체이름","개체무게","먹이종류","교체횟수","투입일"};
+		Object []column = {"개체번호","개체이름","개체무게","먹이종류","교체횟수","투입일","누댓수"};
 		Object[][] object = new Object[][] {};
 		DefaultTableModel model = new DefaultTableModel(object, column);
 		table.setModel(model);
+		
+		table.getColumnModel().getColumn(0).setPreferredWidth(30);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+		table.getColumnModel().getColumn(2).setPreferredWidth(30);
+		table.getColumnModel().getColumn(4).setPreferredWidth(20);
+		table.getColumnModel().getColumn(6).setPreferredWidth(20);
 		
 		JLabel lblBreedingproject = new JLabel("BreedingProject");
 		lblBreedingproject.setBackground(SystemColor.desktop);
@@ -105,10 +113,10 @@ public class GUIMenu {
 				String name2 = TFMeal.getText();
 				String num = TFICNum.getText();
 				String date = TFDate.getText();
+				String generation = TFgeneration.getText();
 				//원본 파일에 저장
-				logger.getINList().add(new AliveInsect(Integer.parseInt(id), name, Double.parseDouble(weight), name2, Integer.parseInt(num),date));
-				logger.PutObject();
-				logger.log("변경 사항이 저장됨");
+				logger.getINList().add(new AliveInsect(Integer.parseInt(id), name, Double.parseDouble(weight), name2, Integer.parseInt(num), date, generation));
+				
 				
 				vec.add(id);
 				vec.add(name);
@@ -116,6 +124,7 @@ public class GUIMenu {
 				vec.add(name2);
 				vec.add(num);
 				vec.add(date);
+				vec.add(generation);
 				
 				TFId.setText("");
 				TFName.setText("");
@@ -123,10 +132,12 @@ public class GUIMenu {
 				TFMeal.setText("");
 				TFICNum.setText("");
 				TFDate.setText("");
+				TFgeneration.setText("");
 				//테이블에 값을 저장
 				model.addRow(vec);
 				table.updateUI();
-				logger.log(id+"가 추가됨");
+				logger.PutObject();
+				logger.log("변경 사항이 저장되고"+id+", "+name+"가 추가됨");
 			}
 		});
 		panel.add(Add);
@@ -151,7 +162,7 @@ public class GUIMenu {
 						}
 					}
 					DeleteIdTF.setText("");
-					logger.log(id+"이 제거됨");
+					logger.log(id+", "+name+"이 제거됨");
 				}catch (Exception e1) {
 					return;
 				}
@@ -175,6 +186,7 @@ public class GUIMenu {
 						edit.setDate(logger.getINList().get(i).getDate());
 						edit.setWeight(Double.parseDouble(weight));
 						edit.setNum(Integer.parseInt(num));
+						edit.setGeneration(logger.getINList().get(i).getGeneration());
 						logger.getINList().set(i, edit);
 						for(int j = 0; j < model.getRowCount();j++) {
 							model.setValueAt(weight, i, 2);
@@ -187,7 +199,7 @@ public class GUIMenu {
 				TFCNum.setText(""); 
 			    EditTFWeight.setText("");
 				TFICENum.setText("");
-				logger.log(id+"의 무게와 교체횟수가 변경되었습니다.");
+				logger.log(id+", "+name+"의 무게와 교체횟수가 변경되었습니다.");
 			}
 		});
 		panel.add(Edit);
@@ -233,6 +245,7 @@ public class GUIMenu {
 					vec.add(name1.get(i).getName2());
 					vec.add(Integer.toString(name1.get(i).getNum()));
 					vec.add(name1.get(i).getDate());
+					vec.add(name1.get(i).getGeneration());
 					model.addRow(vec);
 				}
 				logger.log("개체를 불러왔습니다.");
@@ -397,11 +410,29 @@ public class GUIMenu {
 		panel_1.add(TFDate, gbc_TFDate);
 		TFDate.setColumns(10);
 		
+		JLabel generation = new JLabel("\uB204\uB313\uC218");
+		GridBagConstraints gbc_generation = new GridBagConstraints();
+		gbc_generation.anchor = GridBagConstraints.EAST;
+		gbc_generation.insets = new Insets(0, 0, 5, 5);
+		gbc_generation.gridx = 0;
+		gbc_generation.gridy = 7;
+		panel_1.add(generation, gbc_generation);
+		
+		TFgeneration = new JTextField();
+		TFgeneration.setText("");
+		GridBagConstraints gbc_TFgeneration = new GridBagConstraints();
+		gbc_TFgeneration.insets = new Insets(0, 0, 5, 0);
+		gbc_TFgeneration.fill = GridBagConstraints.HORIZONTAL;
+		gbc_TFgeneration.gridx = 1;
+		gbc_TFgeneration.gridy = 7;
+		panel_1.add(TFgeneration, gbc_TFgeneration);
+		TFgeneration.setColumns(10);
+		
 		JLabel EditL = new JLabel("개체편집");
 		GridBagConstraints gbc_EditL = new GridBagConstraints();
 		gbc_EditL.insets = new Insets(0, 0, 5, 0);
 		gbc_EditL.gridx = 1;
-		gbc_EditL.gridy = 7;
+		gbc_EditL.gridy = 8;
 		panel_1.add(EditL, gbc_EditL);
 		
 		JLabel CNum = new JLabel("교체번호");
@@ -409,7 +440,7 @@ public class GUIMenu {
 		gbc_CNum.anchor = GridBagConstraints.EAST;
 		gbc_CNum.insets = new Insets(0, 0, 5, 5);
 		gbc_CNum.gridx = 0;
-		gbc_CNum.gridy = 8;
+		gbc_CNum.gridy = 9;
 		panel_1.add(CNum, gbc_CNum);
 		
 		TFCNum = new JTextField();
@@ -417,7 +448,7 @@ public class GUIMenu {
 		gbc_TFCNum.insets = new Insets(0, 0, 5, 0);
 		gbc_TFCNum.fill = GridBagConstraints.HORIZONTAL;
 		gbc_TFCNum.gridx = 1;
-		gbc_TFCNum.gridy = 8;
+		gbc_TFCNum.gridy = 9;
 		panel_1.add(TFCNum, gbc_TFCNum);
 		TFCNum.setColumns(10);
 		
@@ -426,7 +457,7 @@ public class GUIMenu {
 		gbc_EditWeight.anchor = GridBagConstraints.EAST;
 		gbc_EditWeight.insets = new Insets(0, 0, 5, 5);
 		gbc_EditWeight.gridx = 0;
-		gbc_EditWeight.gridy = 9;
+		gbc_EditWeight.gridy = 10;
 		panel_1.add(EditWeight, gbc_EditWeight);
 		
 		EditTFWeight = new JTextField();
@@ -434,7 +465,7 @@ public class GUIMenu {
 		gbc_EditTFWeight.insets = new Insets(0, 0, 5, 0);
 		gbc_EditTFWeight.fill = GridBagConstraints.HORIZONTAL;
 		gbc_EditTFWeight.gridx = 1;
-		gbc_EditTFWeight.gridy = 9;
+		gbc_EditTFWeight.gridy = 10;
 		panel_1.add(EditTFWeight, gbc_EditTFWeight);
 		EditTFWeight.setColumns(10);
 		
@@ -443,7 +474,7 @@ public class GUIMenu {
 		gbc_Cnum.anchor = GridBagConstraints.EAST;
 		gbc_Cnum.insets = new Insets(0, 0, 5, 5);
 		gbc_Cnum.gridx = 0;
-		gbc_Cnum.gridy = 10;
+		gbc_Cnum.gridy = 11;
 		panel_1.add(Cnum, gbc_Cnum);
 		
 		TFICENum = new JTextField();
@@ -451,7 +482,7 @@ public class GUIMenu {
 		gbc_TFICENum.insets = new Insets(0, 0, 5, 0);
 		gbc_TFICENum.fill = GridBagConstraints.HORIZONTAL;
 		gbc_TFICENum.gridx = 1;
-		gbc_TFICENum.gridy = 10;
+		gbc_TFICENum.gridy = 11;
 		panel_1.add(TFICENum, gbc_TFICENum);
 		TFICENum.setColumns(10);
 		
@@ -459,7 +490,7 @@ public class GUIMenu {
 		GridBagConstraints gbc_DeleteL = new GridBagConstraints();
 		gbc_DeleteL.insets = new Insets(0, 0, 5, 0);
 		gbc_DeleteL.gridx = 1;
-		gbc_DeleteL.gridy = 11;
+		gbc_DeleteL.gridy = 12;
 		panel_1.add(DeleteL, gbc_DeleteL);
 		
 		JLabel DeleteId = new JLabel("제거번호");
@@ -467,7 +498,7 @@ public class GUIMenu {
 		gbc_DeleteId.anchor = GridBagConstraints.EAST;
 		gbc_DeleteId.insets = new Insets(0, 0, 5, 5);
 		gbc_DeleteId.gridx = 0;
-		gbc_DeleteId.gridy = 12;
+		gbc_DeleteId.gridy = 13;
 		panel_1.add(DeleteId, gbc_DeleteId);
 		
 		DeleteIdTF = new JTextField();
@@ -475,7 +506,7 @@ public class GUIMenu {
 		gbc_DeleteIdTF.insets = new Insets(0, 0, 5, 0);
 		gbc_DeleteIdTF.fill = GridBagConstraints.HORIZONTAL;
 		gbc_DeleteIdTF.gridx = 1;
-		gbc_DeleteIdTF.gridy = 12;
+		gbc_DeleteIdTF.gridy = 13;
 		panel_1.add(DeleteIdTF, gbc_DeleteIdTF);
 		DeleteIdTF.setColumns(10);
 		

@@ -11,5 +11,6 @@ public abstract class Insect implements Serializable{ //부모클래스를 추상클래스�
 	protected String name2;
 	protected int num;
 	protected String date;
+	protected String generation;
 
 }
